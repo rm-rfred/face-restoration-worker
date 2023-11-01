@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package face_restoration;
+
+service FaceRestorationService {
+    rpc ApplyFaceRestoration (FaceRestorationRequest) returns (FaceRestorationReply) {}
+}
+
+message FaceRestorationRequest {
+    bytes image = 1;
+}
+
+message FaceRestorationReply {
+    bytes restored_image = 1;
+}
