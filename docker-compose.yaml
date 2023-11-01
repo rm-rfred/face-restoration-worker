@@ -1,0 +1,11 @@
+version: "3.2"
+
+services:
+  face-restoration-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rmrfred/image-classification-worker:latest
+    restart: always
+    volumes:
+      - /srv/docker/face-restoration-worker/logs:/logs
