@@ -1,5 +1,7 @@
 addict==2.4.0
-future==0.18.2
+# basicsr==1.4.2
+facexlib==0.3.0
+# future==0.18.2
 grpcio==1.59.0
 grpcio-tools==1.59.0
 protobuf==4.24.4
@@ -9,9 +11,11 @@ numpy==1.26.1
 opencv-python==4.8.1.78
 Pillow==10.0.1
 pyyaml==6.0.1
+# realesrgan==0.3.0
 requests==2.31.0
 scikit-image==0.22.0
 scipy==1.11.3
+simber==0.2.6
 tb-nightly==2.16.0a20231101
 torch==2.1.0
 torchvision==0.16.0

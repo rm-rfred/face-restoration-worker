@@ -5,7 +5,20 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: rmrfred/image-classification-worker:latest
+    image: rmrfred/face-restoration-worker:latest
     restart: always
     volumes:
       - /srv/docker/face-restoration-worker/logs:/logs
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rmrfred/face-restoration-worker-client:latest
+    restart: always
+    working_dir: /usr/app
+    volumes:
+      - .:/usr/app/:rw
+      - ./client.py:/usr/app/client.py
+      - /srv/docker/face-restoration-worker/logs:/logs
+    command: python3.10 /usr/app/client.py
