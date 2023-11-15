@@ -29,7 +29,14 @@ class FaceRestorationService(face_restoration_pb2_grpc.FaceRestorationServiceSer
         img = np.array(request.image)
         img_rgb = cv2.cvtColor(pickle.loads(img), cv2.COLOR_BGR2RGB)
 
-        restored_image = inference(img_rgb)
+        restored_image_array = inference(img_rgb)
+
+        restored_image = pickle.dumps(restored_image_array)
+
+        # img_out = cv2.cvtColor(pickle.loads(restored_image), cv2.COLOR_BGR2RGB)
+        # img_out = cv2.imread(restored_image)
+        # cv2.imwrite("out.jpg", img_out)
+
         return face_restoration_pb2.FaceRestorationReply(restored_image=restored_image)
         # except Exception as e:
         #     logger.error(e)

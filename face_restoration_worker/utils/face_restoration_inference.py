@@ -94,7 +94,7 @@ def set_realesrgan():
 
 def set_face_helper(upscale):
     face_helper = FaceRestoreHelper(
-        upscale=2,
+        upscale,
         face_size=512,
         crop_ratio=(1, 1),
         det_model=model_detection,
@@ -102,6 +102,35 @@ def set_face_helper(upscale):
         use_parse=True,
         device="cpu"
         # device=device,
+    )
+    return face_helper
+
+
+upsampler = set_realesrgan()
+
+
+def set_codeformer_net():
+    model = CodeFormer(
+        dim_embd=512,
+        codebook_size=1024,
+        n_head=8,
+        n_layers=9,
+        connect_list=["32", "64", "128", "256"],
+    ).to(device)
+    model.load_state_dict(torch.load(model_codeformer)["params_ema"])
+    model.eval()
+    return model
+
+
+def set_face_helper(upscale):
+    face_helper = FaceRestoreHelper(
+        upscale,
+        face_size=512,
+        crop_ratio=(1, 1),
+        det_model=model_detection,
+        save_ext="png",
+        use_parse=True,
+        device="cpu",
     )
     return face_helper
 
@@ -117,68 +146,28 @@ def set_upscale(upscale, img):
     return upscale
 
 
-upsampler = set_realesrgan()
-
-
-def inference(image):
+def inference(image, upscale=2):
     has_aligned = False
     only_center_face = False
     draw_box = False
     bg_upsampler = None
     codeformer_fidelity = 0.5
-    upscale = 0.5
     face_upsample = True
 
     face_upsampler = upsampler if face_upsample else None
 
-    def set_face_helper(upscale):
-        face_helper = FaceRestoreHelper(
-            upscale,
-            face_size=512,
-            crop_ratio=(1, 1),
-            det_model=model_detection,
-            save_ext="png",
-            use_parse=True,
-            device="cpu",
-        )
-        return face_helper
-
     face_helper = set_face_helper(upscale)
-
-    # upscale = set_upscale(upscale, img)
-    if upscale == 1:
-        background_enhance = False
-        face_upsample = False
-
-    # face_helper = FaceRestoreHelper(
-    #     upscale_factor=2,
-    #     face_size=512,
-    #     crop_ratio=(1, 1),
-    #     det_model="retinaface_resnet50",
-    #     save_ext="png",
-    #     use_parse=True,
-    #     device="cpu",
-    # )
-
-    def set_codeformer_net():
-        model = CodeFormer(
-            dim_embd=512,
-            codebook_size=1024,
-            n_head=8,
-            n_layers=9,
-            connect_list=["32", "64", "128", "256"],
-        ).to(device)
-        model.load_state_dict(torch.load(model_codeformer)["params_ema"])
-        model.eval()
-        return model
 
     codeformer_net = set_codeformer_net()
 
     # try:
     source = "blurry_face.jpg"
     img = cv2.imread(source, cv2.IMREAD_COLOR)
-    logger.info("\timage size:", str(img.shape))
-    # print("\timage size:", img.shape)
+
+    upscale = set_upscale(upscale, img)
+    if upscale == 1:
+        background_enhance = False
+        face_upsample = False
 
     if has_aligned:
         img = cv2.resize(img, (512, 512), interpolation=cv2.INTER_LINEAR)
@@ -235,7 +224,8 @@ def inference(image):
     imwrite(restored_img, str(save_path))
 
     restored_img = cv2.cvtColor(restored_img, cv2.COLOR_BGR2RGB)
-    return restored_img, save_path
+    logger.info(restored_img)
+    return restored_img
     # except Exception as error:
     #     print("Global exception", error)
     #     return None, None
