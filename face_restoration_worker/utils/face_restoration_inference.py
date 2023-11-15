@@ -1,79 +1,22 @@
-import os
-import pickle
-
 import cv2
-import numpy as np
 import torch
-from simber import Logger
 from torchvision.transforms.functional import normalize
 
 from face_restoration_worker.utils.basicsr.archs.rrdbnet_arch import RRDBNet
-from face_restoration_worker.utils.basicsr.utils import imwrite, img2tensor, tensor2img
-
+from face_restoration_worker.utils.basicsr.utils import img2tensor, tensor2img
 from face_restoration_worker.utils.basicsr.utils.realesrgan_utils import RealESRGANer
-
-# from face_restoration_worker.utils.basicsr.utils.misc import (
-#     gpu_is_available,
-#     get_device,
-# )
-# from face_restoration_worker.utils.basicsr.utils.realesrgan_utils import RealESRGANer
-from face_restoration_worker.utils.basicsr.utils.registry import ARCH_REGISTRY
-
 from face_restoration_worker.utils.basicsr.archs.codeformer_arch import CodeFormer
-
-# from face_restoration_worker.utils.facelib.utils.face_restoration_helper import (
-#     FaceRestoreHelper,
-# )
 
 from face_restoration_worker.utils.facelib.utils.face_restoration_helper import (
     FaceRestoreHelper,
 )
-
 from face_restoration_worker.utils.facelib.utils.misc import is_gray
-
-
-LOG_FORMAT = "{levelname} [{filename}:{lineno}]:"
-
-LOG_LEVEL: str = "INFO"
-logger = Logger(__name__, log_path="/tmp/logs/server.log", level=LOG_LEVEL)
-logger.update_format(LOG_FORMAT)
 
 
 model_realesrgan = "/app/models/RealESRGAN_x2plus.pth"
 model_codeformer = "/app/models/codeformer.pth"
 model_detection = "retinaface_resnet50"
-# device = get_device()
 device = "cpu"
-
-
-# def set_realesrgan():
-#     model = RRDBNet(
-#         num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=2
-#     )
-#     upsampler = RealESRGANer(
-#         model_path=model_realesrgan,
-#         model=model,
-#         tile=400,
-#         tile_pad=40,
-#         pre_pad=0,
-#         # half=True if gpu_is_available() else False,
-#         half=False,
-#         scale=2,
-#     )
-#     return upsampler
-
-
-def set_codeformer_net():
-    model = ARCH_REGISTRY.get("CodeFormer")(
-        dim_embd=512,
-        codebook_size=1024,
-        n_head=8,
-        n_layers=9,
-        connect_list=["32", "64", "128", "256"],
-    ).to(device)
-    model.load_state_dict(torch.load(model_codeformer)["params_ema"])
-    model.eval()
-    return model
 
 
 def set_realesrgan():
@@ -100,8 +43,7 @@ def set_face_helper(upscale):
         det_model=model_detection,
         save_ext="png",
         use_parse=True,
-        device="cpu"
-        # device=device,
+        device=device,
     )
     return face_helper
 
@@ -130,7 +72,7 @@ def set_face_helper(upscale):
         det_model=model_detection,
         save_ext="png",
         use_parse=True,
-        device="cpu",
+        device=device,
     )
     return face_helper
 
@@ -146,23 +88,32 @@ def set_upscale(upscale, img):
     return upscale
 
 
-def inference(image, upscale=2):
+codeformer_net = set_codeformer_net()
+
+
+def inference(
+    image,
+    background_enhance: bool = True,
+    face_upsample: bool = True,
+    upscale: int = 2,
+    codeformer_fidelity: float = 0.5,
+):
     has_aligned = False
     only_center_face = False
     draw_box = False
-    bg_upsampler = None
-    codeformer_fidelity = 0.5
-    face_upsample = True
-
-    face_upsampler = upsampler if face_upsample else None
-
-    face_helper = set_face_helper(upscale)
-
-    codeformer_net = set_codeformer_net()
 
     # try:
     source = "blurry_face.jpg"
     img = cv2.imread(source, cv2.IMREAD_COLOR)
+
+    upscale = set_upscale(upscale, img)
+    if upscale == 1:
+        background_enhance = False
+        face_upsample = False
+
+    face_helper = set_face_helper(upscale)
+    bg_upsampler = upsampler if background_enhance else None
+    face_upsampler = upsampler if face_upsample else None
 
     upscale = set_upscale(upscale, img)
     if upscale == 1:
@@ -220,11 +171,7 @@ def inference(image, upscale=2):
                 upsample_img=bg_img, draw_box=draw_box
             )
 
-    save_path = f"out.png"
-    imwrite(restored_img, str(save_path))
-
     restored_img = cv2.cvtColor(restored_img, cv2.COLOR_BGR2RGB)
-    logger.info(restored_img)
     return restored_img
     # except Exception as error:
     #     print("Global exception", error)
