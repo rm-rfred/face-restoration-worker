@@ -104,7 +104,7 @@ def inference(
 
     # try:
     source = "blurry_face.jpg"
-    img = cv2.imread(source, cv2.IMREAD_COLOR)
+    img = cv2.imread(source, cv2.COLOR_BGR2RGB)
 
     upscale = set_upscale(upscale, img)
     if upscale == 1:
@@ -144,12 +144,12 @@ def inference(
                 output = codeformer_net(
                     cropped_face_t, w=codeformer_fidelity, adain=True
                 )[0]
-                restored_face = tensor2img(output, rgb2bgr=True, min_max=(-1, 1))
+                restored_face = tensor2img(output, rgb2bgr=False, min_max=(-1, 1))
             del output
             torch.cuda.empty_cache()
         except RuntimeError as error:
             print(f"Failed inference for CodeFormer: {error}")
-            restored_face = tensor2img(cropped_face_t, rgb2bgr=True, min_max=(-1, 1))
+            restored_face = tensor2img(cropped_face_t, rgb2bgr=False, min_max=(-1, 1))
 
         restored_face = restored_face.astype("uint8")
         face_helper.add_restored_face(restored_face)
@@ -172,6 +172,7 @@ def inference(
             )
 
     restored_img = cv2.cvtColor(restored_img, cv2.COLOR_BGR2RGB)
+
     return restored_img
     # except Exception as error:
     #     print("Global exception", error)
