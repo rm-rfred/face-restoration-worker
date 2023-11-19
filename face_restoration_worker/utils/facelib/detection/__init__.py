@@ -4,13 +4,15 @@ from torch import nn
 from copy import deepcopy
 
 from face_restoration_worker.utils.facelib.utils import load_file_from_url
-from face_restoration_worker.utils.facelib.utils import download_pretrained_models
 from face_restoration_worker.utils.facelib.detection.yolov5face.models.common import (
     Conv,
 )
 
 from .retinaface.retinaface import RetinaFace
 from .yolov5face.face_detector import YoloDetector
+
+
+MODELS_PATH = os.environ.get("MODELS_PATH", "/app/models/")
 
 
 def init_detection_model(model_name, half=False, device="cuda"):
@@ -27,16 +29,12 @@ def init_detection_model(model_name, half=False, device="cuda"):
 def init_retinaface_model(model_name, half=False, device="cuda"):
     if model_name == "retinaface_resnet50":
         model = RetinaFace(network_name="resnet50", half=half)
-        model_url = "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/detection_Resnet50_Final.pth"
     elif model_name == "retinaface_mobile0.25":
         model = RetinaFace(network_name="mobile0.25", half=half)
-        model_url = "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/detection_mobilenet0.25_Final.pth"
     else:
         raise NotImplementedError(f"{model_name} is not implemented.")
 
-    model_path = load_file_from_url(
-        url=model_url, model_dir="weights/facelib", progress=True, file_name=None
-    )
+    model_path = os.path.join(MODELS_PATH, "detection_Resnet50_Final.pth")
     load_net = torch.load(model_path, map_location=lambda storage, loc: storage)
     # remove unnecessary 'module.'
     for k, v in deepcopy(load_net).items():

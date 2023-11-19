@@ -5,6 +5,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    env_file:
+        - .env
+    environment:
+        MODELS_PATH: ${MODELS_PATH}
+
     image: rmrfred/face-restoration-worker:latest
     restart: always
     volumes:

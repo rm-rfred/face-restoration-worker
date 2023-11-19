@@ -21,20 +21,19 @@ from face_restoration_worker_client.config import (
 
 class FaceRestorationService(face_restoration_pb2_grpc.FaceRestorationServiceServicer):
     def ApplyFaceRestoration(self, request, context):
-        # try:
-        img = np.array(request.image)
-        img_rgb = cv2.cvtColor(pickle.loads(img), cv2.COLOR_BGR2RGB)
+        try:
+            img = np.array(request.image)
+            img_rgb = cv2.cvtColor(pickle.loads(img), cv2.COLOR_BGR2RGB)
 
-        restored_image_array = inference(img_rgb)
+            restored_image_array = inference(img_rgb)
 
-        restored_image = pickle.dumps(restored_image_array)
+            restored_image = pickle.dumps(restored_image_array)
 
-        return face_restoration_pb2.FaceRestorationReply(restored_image=restored_image)
-        # except Exception as e:
-        #     logger.error(e)
-        #     return face_restoration_pb2.FaceRestorationReply(
-        #         restored_image=pickle.dumps(request.image)
-        #     )
+            return face_restoration_pb2.FaceRestorationReply(
+                restored_image=restored_image
+            )
+        except Exception as e:
+            logger.error(e)
 
 
 def serve():

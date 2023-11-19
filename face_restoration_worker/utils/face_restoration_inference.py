@@ -1,3 +1,5 @@
+import os
+
 import cv2
 import torch
 from torchvision.transforms.functional import normalize
@@ -12,11 +14,13 @@ from face_restoration_worker.utils.facelib.utils.face_restoration_helper import 
 )
 from face_restoration_worker.utils.facelib.utils.misc import is_gray
 
-
-model_realesrgan = "/app/models/RealESRGAN_x2plus.pth"
-model_codeformer = "/app/models/codeformer.pth"
-model_detection = "retinaface_resnet50"
 device = "cpu"
+MODELS_PATH = os.environ.get("MODELS_PATH", "/app/models/")
+
+model_realesrgan = os.path.join(MODELS_PATH, "RealESRGAN_x2plus.pth")
+model_codeformer = os.path.join(MODELS_PATH, "codeformer.pth")
+
+model_detection = "retinaface_resnet50"
 
 
 def set_realesrgan():
