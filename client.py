@@ -94,7 +94,7 @@ def _run_worker_query(img: bytes) -> str:
     stub = face_restoration_pb2_grpc.FaceRestorationServiceStub(channel)
 
     source = "blurry_face.jpg"
-    image_array = cv.imread(source, cv.COLOR_BGR2RGB)
+    image_array = cv.imread(source)
 
     response = stub.ApplyFaceRestoration(
         face_restoration_pb2.FaceRestorationRequest(image=pickle.dumps(image_array))

@@ -103,10 +103,8 @@ def inference(
     draw_box = False
 
     # try:
-    source = "blurry_face.jpg"
-    img = cv2.imread(source, cv2.COLOR_BGR2RGB)
 
-    upscale = set_upscale(upscale, img)
+    upscale = set_upscale(upscale, image)
     if upscale == 1:
         background_enhance = False
         face_upsample = False
@@ -115,19 +113,19 @@ def inference(
     bg_upsampler = upsampler if background_enhance else None
     face_upsampler = upsampler if face_upsample else None
 
-    upscale = set_upscale(upscale, img)
+    upscale = set_upscale(upscale, image)
     if upscale == 1:
         background_enhance = False
         face_upsample = False
 
     if has_aligned:
-        img = cv2.resize(img, (512, 512), interpolation=cv2.INTER_LINEAR)
-        face_helper.is_gray = is_gray(img, threshold=5)
+        image = cv2.resize(image, (512, 512), interpolation=cv2.INTER_LINEAR)
+        face_helper.is_gray = is_gray(image, threshold=5)
         if face_helper.is_gray:
             print("\tgrayscale input: True")
-        face_helper.cropped_faces = [img]
+        face_helper.cropped_faces = [image]
     else:
-        face_helper.read_image(img)
+        face_helper.read_image(image)
         num_det_faces = face_helper.get_face_landmarks_5(
             only_center_face=only_center_face, resize=640, eye_dist_threshold=5
         )
@@ -144,19 +142,19 @@ def inference(
                 output = codeformer_net(
                     cropped_face_t, w=codeformer_fidelity, adain=True
                 )[0]
-                restored_face = tensor2img(output, rgb2bgr=False, min_max=(-1, 1))
+                restored_face = tensor2img(output, rgb2bgr=True, min_max=(-1, 1))
             del output
             torch.cuda.empty_cache()
         except RuntimeError as error:
             print(f"Failed inference for CodeFormer: {error}")
-            restored_face = tensor2img(cropped_face_t, rgb2bgr=False, min_max=(-1, 1))
+            restored_face = tensor2img(cropped_face_t, rgb2bgr=True, min_max=(-1, 1))
 
         restored_face = restored_face.astype("uint8")
         face_helper.add_restored_face(restored_face)
 
     if not has_aligned:
         if bg_upsampler is not None:
-            bg_img = bg_upsampler.enhance(img, outscale=upscale)[0]
+            bg_img = bg_upsampler.enhance(image, outscale=upscale)[0]
         else:
             bg_img = None
         face_helper.get_inverse_affine(None)

@@ -23,7 +23,7 @@ class FaceRestorationService(face_restoration_pb2_grpc.FaceRestorationServiceSer
     def ApplyFaceRestoration(self, request, context):
         # try:
         img = np.array(request.image)
-        img_rgb = cv2.cvtColor(pickle.loads(img), cv2.IMREAD_COLOR)
+        img_rgb = cv2.cvtColor(pickle.loads(img), cv2.COLOR_BGR2RGB)
 
         restored_image_array = inference(img_rgb)
 
