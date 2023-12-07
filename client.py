@@ -93,7 +93,7 @@ def _run_worker_query(img: bytes) -> str:
     )
     stub = face_restoration_pb2_grpc.FaceRestorationServiceStub(channel)
 
-    source = "blurry_face.jpg"
+    source = "low_quality.png"
     image_array = cv.imread(source)
 
     response = stub.ApplyFaceRestoration(
@@ -132,7 +132,7 @@ def prepare_batch() -> tp.List[bytes]:
     """
     logger.info("Reading src image...")
     source = "blurry_face.jpg"
-    img = cv.imread(source, cv.COLOR_BGR2RGB)
+    img = cv.imread(source, cv.IMREAD_COLOR)
     batch: tp.List[bytes] = []
     for _ in range(NUM_IMAGES):
         batch.append(img)

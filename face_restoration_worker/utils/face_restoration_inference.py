@@ -173,8 +173,6 @@ def inference(
                 upsample_img=bg_img, draw_box=draw_box
             )
 
-    restored_img = cv2.cvtColor(restored_img, cv2.COLOR_BGR2RGB)
-
     return restored_img
     # except Exception as error:
     #     print("Global exception", error)
