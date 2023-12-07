@@ -10,6 +10,8 @@ from face_restoration_worker.utils.basicsr.utils.download_util import load_file_
 
 # ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+device = os.environ.get("DEVICE", "cpu")
+
 
 class RealESRGANer:
     """A helper class for upsampling images with RealESRGAN.
@@ -35,7 +37,7 @@ class RealESRGANer:
         tile_pad=10,
         pre_pad=10,
         half=False,
-        device=None,
+        device=device,
         gpu_id=None,
     ):
         self.scale = scale
@@ -52,7 +54,7 @@ class RealESRGANer:
         # else:
         #     self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') if device is None else device
 
-        self.device = "cpu"
+        self.device = device
 
         # if the model_path starts with https, it will first download models to the folder: realesrgan/weights
         if model_path.startswith("https://"):
@@ -62,7 +64,7 @@ class RealESRGANer:
                 progress=True,
                 file_name=None,
             )
-        loadnet = torch.load(model_path, map_location=torch.device("cpu"))
+        loadnet = torch.load(model_path, map_location=torch.device(device))
         # prefer to use params_ema
         if "params_ema" in loadnet:
             keyname = "params_ema"

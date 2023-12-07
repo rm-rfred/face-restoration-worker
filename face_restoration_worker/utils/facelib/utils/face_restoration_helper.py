@@ -1,3 +1,5 @@
+import os
+
 import cv2
 import numpy as np
 import os
@@ -17,7 +19,7 @@ from face_restoration_worker.utils.basicsr.utils.download_util import load_file_
 
 # from face_restoration_worker.utils.basicsr.utils.misc import get_device
 
-device = "cpu"
+device = os.environ.get("DEVICE", "cpu")
 
 dlib_model_url = {
     "face_detector": "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/mmod_human_face_detector-4cb19393.dat",
@@ -75,9 +77,9 @@ class FaceRestoreHelper(object):
         template_3points=False,
         pad_blur=False,
         use_parse=False,
-        device=None,
+        device=device,
     ):
-        self.device = "cpu"
+        self.device = device
 
         self.template_3points = template_3points  # improve robustness
         self.upscale_factor = int(upscale_factor)

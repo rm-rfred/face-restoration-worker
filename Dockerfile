@@ -24,19 +24,10 @@ RUN chmod +x grpcurl && mv grpcurl /usr/local/bin/grpcurl && rm /grpcurl.tar.gz
 
 COPY ./requirements.txt /app/requirements.txt
 
-# COPY ./setup.py /app/setup.py
-# RUN python3.10 setup.py develop
-
-# COPY ./code-fix.py /app/code-fix.py
-# RUN python3.10 code-fix.py
-
-# RUN python3.10 -m pip install basicsr
 RUN python3.10 -m pip install -r /app/requirements.txt
 
 COPY ./models /app/models
 COPY ./face_restoration_worker /app/face_restoration_worker/
 COPY ./face_restoration_worker_client /app/face_restoration_worker_client/
-
-COPY ./blurry_face.jpg /app/blurry_face.jpg
 
 CMD ["python3.10", "-m", "face_restoration_worker.server.grpc_server"]

@@ -1,3 +1,5 @@
+import os
+
 import cv2
 import numpy as np
 import torch
@@ -31,7 +33,7 @@ from face_restoration_worker.utils.facelib.detection.retinaface.retinaface_utils
 
 # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # device = get_device()
-device = "cpu"
+device = os.environ.get("DEVICE", "cpu")
 
 
 def generate_config(network_name):

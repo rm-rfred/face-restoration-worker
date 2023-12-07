@@ -14,7 +14,7 @@ from face_restoration_worker.utils.facelib.utils.face_restoration_helper import 
 )
 from face_restoration_worker.utils.facelib.utils.misc import is_gray
 
-device = "cpu"
+device = os.environ.get("DEVICE", "cpu")
 MODELS_PATH = os.environ.get("MODELS_PATH", "/app/models/")
 
 model_realesrgan = os.path.join(MODELS_PATH, "RealESRGAN_x2plus.pth")
