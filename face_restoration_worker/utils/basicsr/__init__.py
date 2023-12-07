@@ -6,8 +6,6 @@ from .losses import *
 from .metrics import *
 from .models import *
 from .ops import *
-from .test import *
-from .train import *
 from .utils import *
 
 # from .version import __gitsha__, __version__
