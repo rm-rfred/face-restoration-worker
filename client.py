@@ -93,7 +93,7 @@ def _run_worker_query(img: bytes) -> str:
     )
     stub = face_restoration_pb2_grpc.FaceRestorationServiceStub(channel)
 
-    source = "blurry_face.jpg"
+    source = "low_quality1.png"
     image_array = cv.imread(source)
 
     response = stub.ApplyFaceRestoration(
