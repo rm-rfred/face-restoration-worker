@@ -93,11 +93,17 @@ def _run_worker_query(img: bytes) -> str:
     )
     stub = face_restoration_pb2_grpc.FaceRestorationServiceStub(channel)
 
-    source = "low_quality1.png"
+    source = "low_quality.png"
     image_array = cv.imread(source)
 
     response = stub.ApplyFaceRestoration(
-        face_restoration_pb2.FaceRestorationRequest(image=pickle.dumps(image_array))
+        face_restoration_pb2.FaceRestorationRequest(
+            image=pickle.dumps(image_array),
+            background_enhance=True,
+            face_upsample=True,
+            upscale=2,
+            codeformer_fidelity=0.7,
+        )
     )
 
     # Writting face restoration output

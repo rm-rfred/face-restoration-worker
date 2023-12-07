@@ -39,22 +39,6 @@ def set_realesrgan():
     return upsampler
 
 
-def set_face_helper(upscale):
-    face_helper = FaceRestoreHelper(
-        upscale,
-        face_size=512,
-        crop_ratio=(1, 1),
-        det_model=model_detection,
-        save_ext="png",
-        use_parse=True,
-        device=device,
-    )
-    return face_helper
-
-
-upsampler = set_realesrgan()
-
-
 def set_codeformer_net():
     model = CodeFormer(
         dim_embd=512,
@@ -92,6 +76,7 @@ def set_upscale(upscale, img):
     return upscale
 
 
+upsampler = set_realesrgan()
 codeformer_net = set_codeformer_net()
 
 
@@ -105,8 +90,6 @@ def inference(
     has_aligned = False
     only_center_face = False
     draw_box = False
-
-    # try:
 
     upscale = set_upscale(upscale, image)
     if upscale == 1:
@@ -174,6 +157,3 @@ def inference(
             )
 
     return restored_img
-    # except Exception as error:
-    #     print("Global exception", error)
-    #     return None, None

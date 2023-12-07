@@ -25,7 +25,13 @@ class FaceRestorationService(face_restoration_pb2_grpc.FaceRestorationServiceSer
             img = np.array(request.image)
             img_rgb = cv2.cvtColor(pickle.loads(img), cv2.IMREAD_COLOR)
 
-            restored_image_array = inference(img_rgb)
+            restored_image_array = inference(
+                img_rgb,
+                request.background_enhance,
+                request.face_upsample,
+                request.upscale,
+                request.codeformer_fidelity,
+            )
 
             restored_image = pickle.dumps(restored_image_array)
 

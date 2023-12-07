@@ -8,6 +8,10 @@ service FaceRestorationService {
 
 message FaceRestorationRequest {
     bytes image = 1;
+    bool background_enhance = 2;
+    bool face_upsample = 3;
+    int32 upscale = 4;
+    float codeformer_fidelity = 5;
 }
 
 message FaceRestorationReply {
