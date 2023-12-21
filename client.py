@@ -15,7 +15,7 @@ import grpc
 from simber import Logger
 
 # Local grpc module
-sys.path.append("/usr/app/face_restoration_worker_client/config")
+sys.path.append("/usr/app/face_restoration_worker_client/grpc_config")
 import face_restoration_pb2
 import face_restoration_pb2_grpc
 
