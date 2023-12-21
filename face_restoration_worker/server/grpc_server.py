@@ -13,7 +13,7 @@ LOG_LEVEL: str = "INFO"
 logger = Logger(__name__, log_path="/tmp/logs/server.log", level=LOG_LEVEL)
 logger.update_format(LOG_FORMAT)
 
-from face_restoration_worker_client.config import (
+from face_restoration_worker_client.grpc_config import (
     face_restoration_pb2,
     face_restoration_pb2_grpc,
 )

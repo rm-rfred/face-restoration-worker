@@ -7,7 +7,7 @@ setup(
     packages=[
         "face_restoration_worker_client",
         "face_restoration_worker_client.client",
-        "face_restoration_worker_client.config",
+        "face_restoration_worker_client.grpc_config",
     ],
     description="Face restoration worker",
     install_requires=["protobuf==4.24.4", "grpcio==1.59.0", "grpcio-tools==1.59.0"],
