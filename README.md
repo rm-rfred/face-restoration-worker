@@ -25,8 +25,8 @@ For additional ressources, you can check out the [paper](https://arxiv.org/abs/2
 ## Run the project
 
 ```bash
-git clone git@github.com:rm-rfred/vit-worker.git
-cd vit-worker
+git clone git@github.com:rm-rfred/face-restoration-worker.git
+cd face-restoration-worker
 
 # Download the models
 bash download_models.sh
@@ -69,6 +69,6 @@ Then, set DEVICE=cuda:0 on your .env file
 
 ## Dependencies
 
-Docker version **24.0.7**, build afdd53b
-Docker Compose version **v2.23.0**
-[NVIDIA container toolkit](https://github.com/NVIDIA/nvidia-container-toolkit)
+- Docker version **24.0.7**, build afdd53b
+- Docker Compose version **v2.23.0**
+- [NVIDIA container toolkit](https://github.com/NVIDIA/nvidia-container-toolkit)
