@@ -6,7 +6,9 @@ import grpc
 import numpy as np
 from simber import Logger
 
-from face_restoration_worker.server.face_restoration_inference import inference
+from face_restoration_worker.face_restoration_worker.face_restoration_inference import (
+    inference,
+)
 
 LOG_FORMAT = "{levelname} [{filename}:{lineno}]:"
 LOG_LEVEL: str = "INFO"

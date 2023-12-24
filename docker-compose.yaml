@@ -10,21 +10,17 @@ services:
     environment:
         MODELS_PATH: ${MODELS_PATH}
         DEVICE: ${DEVICE}
-
     image: rmrfred/face-restoration-worker:latest
     restart: always
     volumes:
       - /srv/docker/face-restoration-worker/logs:/logs
 
-  client:
-    build:
+  face-restoration-worker-client:
+    build: 
       context: .
       dockerfile: Dockerfile
     image: rmrfred/face-restoration-worker-client:latest
-    restart: always
-    working_dir: /usr/app
     volumes:
-      - .:/usr/app/:rw
-      - ./client.py:/usr/app/client.py
-      - /srv/docker/face-restoration-worker/logs:/logs
-    command: python3.10 /usr/app/client.py
+      - ./face_restoration_worker_client:/face_restoration_worker_client
+      - ./dist:/dist
+    command: bash -c "python3.10 -m pip wheel --no-deps -w /dist /"
