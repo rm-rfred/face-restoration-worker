@@ -1,7 +1,8 @@
 # gRPC face-restoration-worker
 
-A gRPC that exposes [CodeFormer](https://github.com/sczhou/CodeFormer/) model for face restoration
-For additional ressources, you can check out the [paper](https://arxiv.org/abs/2206.11253)
+A gRPC that exposes [CodeFormer](https://github.com/sczhou/CodeFormer/) model for face restoration.
+For additional ressources, you can check out the [paper](https://arxiv.org/abs/2206.11253).
+You want an app that exposes the model ? You should check out [this repo](https://github.com/rm-rfred/face-restoration) !
 
 ![CodeFormer Architecture](./images/codeformer_architecture.jpg)
 
