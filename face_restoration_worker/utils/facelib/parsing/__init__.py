@@ -5,7 +5,7 @@ import torch
 from .bisenet import BiSeNet
 from .parsenet import ParseNet
 
-MODELS_PATH = os.environ.get("MODELS_PATH", "/app/models/")
+MODELS_PATH = os.environ.get("MODELS_PATH", "/models/")
 
 
 def init_parsing_model(model_name="bisenet", half=False, device="cuda"):

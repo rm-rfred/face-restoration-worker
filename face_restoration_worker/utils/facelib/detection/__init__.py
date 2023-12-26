@@ -12,7 +12,7 @@ from .retinaface.retinaface import RetinaFace
 from .yolov5face.face_detector import YoloDetector
 
 
-MODELS_PATH = os.environ.get("MODELS_PATH", "/app/models/")
+MODELS_PATH = os.environ.get("MODELS_PATH", "/models/")
 
 
 def init_detection_model(model_name, half=False, device="cuda"):

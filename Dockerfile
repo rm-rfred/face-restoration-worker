@@ -24,7 +24,8 @@ COPY face_restoration_worker_client /face_restoration_worker_client
 RUN python3.10 -m pip install -r /requirements.txt
 COPY ./setup.py /setup.py
 
-COPY ./models /app/models
+COPY ./download_models.sh /download_models.sh
+RUN bash /download_models.sh
 
 CMD ["python3.10", "-m", "face_restoration_worker.face_restoration_server.grpc_server"]
 

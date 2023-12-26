@@ -25,12 +25,11 @@ You want an app that exposes the model ? You should check out [this repo](https:
 
 ## Run the project
 
+:warning: To build the image, you must have an internet access in order to download the models
+
 ```bash
 git clone git@github.com:rm-rfred/face-restoration-worker.git
 cd face-restoration-worker
-
-# Download the models
-bash download_models.sh
 
 # Copy and fill the env file
 cp .env.example .env
